@@ -7,7 +7,7 @@ def check_file(path: str, filename: str) -> int:
 
 
 def count_nb_files(path: str) -> int:
-    lenght:int = 0
+    lenght: int = 0
     for file in os.listdir(path):
         if ".txt" in file:
             lenght += check_file(path, file)
@@ -34,6 +34,7 @@ def process(path: str, start: int) -> None:
                     print(f"{current_file} is now the current file")
                     file_changed = True
                     continue
+            check = 100000000 - check
             with open(f"./{path}/{current_file}", "r") as f:
                 while check != 0:
                     f.write(pi_all.read(1))
