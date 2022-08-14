@@ -7,7 +7,7 @@ def check_file(path: str, filename: str) -> int:
 
 
 def count_nb_files(path: str) -> int:
-    lenght = 0
+    lenght:int = 0
     for file in os.listdir(path):
         if ".txt" in file:
             lenght += check_file(path, file)
@@ -28,6 +28,7 @@ def process(path: str, start: int) -> None:
                 check = check_file(path, current_file)
                 file_changed = False
                 if check == 100000000:
+                    os.system(f"cd {path} && git push")
                     print(f"{current_file} is full")
                     current_file = f"pi.{int(current_file.split('.')[1]) + 1}.txt"
                     print(f"{current_file} is now the current file")
@@ -42,6 +43,7 @@ def process(path: str, start: int) -> None:
                 if commited == to_push:
                     break
                 file_changed = True
+    os.system(f"cd {path} && git push")
 
 
 def main() -> None:
