@@ -27,7 +27,7 @@ def methode2():
                 f.write(str(x))
                 f.flush()
 
-# up to 1 hours
+# up to 1 hours & 20 minutes
 # most time used by open
 def methode3():
     for i in tqdm(range(100)):
