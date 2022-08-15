@@ -1,3 +1,4 @@
+from email.generator import Generator
 import os
 import requests
 
@@ -55,19 +56,20 @@ def process(path: str, start: int) -> None:
                         file_changed = True
                         continue
                 check = FILE_MAX_SIZE - check
-                while check != 0 and commited < to_push:
-                    char: str = str(next(getter_pi))
-                    open(f"./{path}/{current_file}", "a").write(char)
-                    check -= 1
-                    commited += 1
-                    pbarCommit.update(1)
-                    repo.git.add(update=True)
-                    repo.index.commit(f"decimal: {start + commited} ({char})")
-                    if commited % PUSH_OVER == 0:
-                        repo.remote(name="origin").push()
-                        pbarPush.update(1)
-                        pbarCommit.reset()
-                file_changed = True
+                with open(f"./{path}/{current_file}", "ba", buffering=0) as f:
+                    while check != 0 and commited < to_push:
+                        char: str = str(next(getter_pi))
+                        f.write(char.encode())
+                        check -= 1
+                        commited += 1
+                        pbarCommit.update(1)
+                        repo.git.add(update=True)
+                        repo.index.commit(f"decimal: {start + commited} ({char})")
+                        if commited % PUSH_OVER == 0:
+                            repo.remote(name="origin").push()
+                            pbarPush.update(1)
+                            pbarCommit.reset()
+                    file_changed = True
             repo.remote(name="origin").push()
 
 
