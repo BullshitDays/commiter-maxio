@@ -1,12 +1,15 @@
 import os
-from git import Repo
-from tqdm import tqdm
 import requests
 
+from collections.abc import Iterator
+from tqdm import tqdm
+from git import Repo
+
 PATH_OF_GIT_REPO = r"./race-pi-maxio-1/.git"
+FILE_MAX_SIZE = 100000000
 
 
-def get_digit(start: int) -> int:
+def get_digit(start: int) -> Iterator[int]:
     pi: list = []
     start_next: int = start + 1000
     while True:
@@ -31,8 +34,7 @@ def count_nb_files(path: str) -> int:
 
 
 def process(path: str, start: int) -> None:
-    # filename: pi.1.txt, pi.2.txt
-    getter_pi = get_digit(start)
+    getter_pi: Iterator[int] = get_digit(start)
     repo = Repo(PATH_OF_GIT_REPO)
     current_file: "str" = sorted(filter(lambda x: ".txt" in x, os.listdir(path)), key=lambda x: int(x.split(".")[1]))[-1]
     to_push: int = int(input(f"> "))
@@ -44,15 +46,15 @@ def process(path: str, start: int) -> None:
             if file_changed:
                 check = check_file(path, current_file)
                 file_changed = False
-                if check == 100000000:
+                if check == FILE_MAX_SIZE:
                     repo.remote(name="origin").push()
                     print(f"{current_file} is full")
                     current_file = f"pi.{int(current_file.split('.')[1]) + 1}.txt"
                     print(f"{current_file} is now the current file")
                     file_changed = True
                     continue
-            check = 100000000 - check
-            while check != 0:
+            check = FILE_MAX_SIZE - check
+            while check != 0 and commited < to_push:
                 char: str = str(next(getter_pi))
                 open(f"./{path}/{current_file}", "a").write(char)
                 check -= 1
@@ -60,9 +62,6 @@ def process(path: str, start: int) -> None:
                 pbar.update(1)
                 repo.git.add(update=True)
                 repo.index.commit(f"decimal: {start + commited} ({char})")
-                if commited == to_push:
-                    repo.remote(name="origin").push()
-                    exit(0)
             file_changed = True
         repo.remote(name="origin").push()
 
