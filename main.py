@@ -6,7 +6,7 @@ from tqdm import tqdm
 from git import Repo
 
 PATH = "race-pi-maxio-1"
-PATH_OF_GIT_REPO = r"./{1}/.git".format(PATH)
+PATH_OF_GIT_REPO = f"./{PATH}/.git"
 FILE_MAX_SIZE = 100000000
 PUSH_OVER = 10000
 
