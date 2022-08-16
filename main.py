@@ -1,4 +1,3 @@
-from email.generator import Generator
 import os
 import requests
 
@@ -6,7 +5,8 @@ from collections.abc import Iterator
 from tqdm import tqdm
 from git import Repo
 
-PATH_OF_GIT_REPO = r"./race-pi-maxio-1/.git"
+PATH = "race-pi-maxio-1"
+PATH_OF_GIT_REPO = r"./{1}/.git".format(PATH)
 FILE_MAX_SIZE = 100000000
 PUSH_OVER = 10000
 
@@ -38,8 +38,8 @@ def count_nb_files(path: str) -> int:
 def process(path: str, start: int) -> None:
     getter_pi: Iterator[int] = get_digit(start)
     repo = Repo(PATH_OF_GIT_REPO)
-    current_file: "str" = sorted(filter(lambda x: ".txt" in x, os.listdir(path)), key=lambda x: int(x.split(".")[1]))[-1]
-    to_push: int = int(input(f"nb commit (choice * {PUSH_OVER})> ")) * PUSH_OVER
+    current_file: str = sorted(filter(lambda x: ".txt" in x, os.listdir(path)), key=lambda x: int(x.split(".")[1]))[-1]
+    to_push: int = int(input(f"nb of push (commit: choice * {PUSH_OVER})> ")) * PUSH_OVER
     file_changed: bool = True
     check: int = 0
     commited: int = 0
@@ -74,9 +74,9 @@ def process(path: str, start: int) -> None:
 
 
 def main() -> None:
-    current_start = count_nb_files("./race-pi-maxio-1")
+    current_start = count_nb_files(f"./{PATH}")
     print(f"start at {current_start} decimal.")
-    process("./race-pi-maxio-1", current_start)
+    process(f"./{PATH}", current_start)
 
 
 if __name__ == "__main__":
