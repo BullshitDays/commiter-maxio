@@ -63,7 +63,7 @@ def process(path: str, start: int) -> None:
                         check -= 1
                         commited += 1
                         pbarCommit.update(1)
-                        repo.git.add(update=True)
+                        repo.git.add(["pi.1.txt"])
                         repo.index.commit(f"decimal: {start + commited} ({char})")
                         if commited % PUSH_OVER == 0:
                             repo.remote(name="origin").push()
