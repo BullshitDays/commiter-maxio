@@ -7,7 +7,7 @@ from git import Repo
 
 PATH = "race-pi-maxio-1"
 PATH_OF_GIT_REPO = f"./{PATH}/.git"
-FILE_MAX_SIZE = 100000000
+FILE_MAX_SIZE = 2000000
 PUSH_OVER = 10000
 
 
@@ -24,7 +24,7 @@ def get_digit(start: int) -> Iterator[int]:
 
 def check_file(path: str, filename: str) -> int:
     with open(f"./{path}/{filename}", "r") as f:
-        return len(f.read())
+        return len(list(filter(lambda x: x != "\n", list(f.read()))))
 
 
 def count_nb_files(path: str) -> int:
@@ -60,6 +60,8 @@ def process(path: str, start: int) -> None:
                     while check != 0 and commited < to_push:
                         char: str = str(next(getter_pi))
                         f.write(char.encode())
+                        if (start + commited) % 1000 == 0:
+                            f.write("\n".encode())
                         check -= 1
                         commited += 1
                         pbarCommit.update(1)
