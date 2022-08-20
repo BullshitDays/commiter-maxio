@@ -7,7 +7,7 @@ from git import Repo
 
 PATH = "race-pi-maxio-1"
 PATH_OF_GIT_REPO = f"./{PATH}/.git"
-FILE_MAX_SIZE = 2000000
+FILE_MAX_SIZE = 2000001
 PUSH_OVER = 10000
 
 
@@ -52,6 +52,7 @@ def process(path: str, start: int) -> None:
                     if check == FILE_MAX_SIZE:
                         print(f"{current_file} is full")
                         current_file = f"pi.{int(current_file.split('.')[1]) + 1}.txt"
+                        open(f"./{PATH}/{current_file}", 'w').close()
                         print(f"{current_file} is now the current file")
                         file_changed = True
                         continue
@@ -65,7 +66,7 @@ def process(path: str, start: int) -> None:
                         check -= 1
                         commited += 1
                         pbarCommit.update(1)
-                        repo.git.add(["pi.1.txt"])
+                        repo.git.add(all=True)
                         repo.index.commit(f"decimal: {start + commited} ({char})")
                         if commited % PUSH_OVER == 0:
                             repo.remote(name="origin").push()
