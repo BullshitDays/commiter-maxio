@@ -7,19 +7,22 @@ from git import Repo
 
 PATH = "race-pi-maxio-1"
 PATH_OF_GIT_REPO = f"./{PATH}/.git"
-FILE_MAX_SIZE = 2000001
-PUSH_OVER = 10000
+FILE_MAX_SIZE = 1000001
+PUSH_OVER = 50000
 
 
 def get_digit(start: int) -> Iterator[int]:
     pi: list = []
     start_next: int = start + 1000
     while True:
-        if len(pi) == 0:
-            req = requests.get("https://api.pi.delivery/v1/pi", params=[("start", start + 1), ("numberOfDigits", 1000)])
-            pi = list(req.json()["content"])
-            start, start_next = start_next, start_next + 1000
-        yield pi.pop(0)
+        try:
+            if len(pi) == 0:
+                req = requests.get("https://api.pi.delivery/v1/pi", params=[("start", start + 1), ("numberOfDigits", 1000)])
+                pi = list(req.json()["content"])
+                start, start_next = start_next, start_next + 1000
+            yield pi.pop(0)
+        except:
+            time.sleep(10)
 
 
 def check_file(path: str, filename: str) -> int:
@@ -59,10 +62,10 @@ def process(path: str, start: int) -> None:
                 check = FILE_MAX_SIZE - check
                 with open(f"./{path}/{current_file}", "ba", buffering=0) as f:
                     while check != 0 and commited < to_push:
+                        if (start + commited) != 0 and (start + commited) % 1000 == 0:
+                            f.write("\n".encode())
                         char: str = str(next(getter_pi))
                         f.write(char.encode())
-                        if (start + commited) % 1000 == 0:
-                            f.write("\n".encode())
                         check -= 1
                         commited += 1
                         pbarCommit.update(1)
